@@ -19,49 +19,64 @@ class _DishesPageState extends State<DishesPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        //trigger leaving and use own data
-        // Navigator.pop(context, false);
         _isItemSelected
             ? setState(() {
                 _isItemSelected = false;
               })
             : exit(0);
-
-        //we need to return a future
         return Future.value(false);
       },
       child: SafeArea(
-        child: _isItemSelected
-            ? DetailsPage(_selectedItemIndex)
-            : Scaffold(
-                body: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    // Text(
-                    //   'Мы очень рады что  вы выбрали\nНаше ресторан, спасибо за визит!',
-                    //   style: TextStyle(fontSize: 16),
-                    // ),
-                    Expanded(
-                      child: GridView.builder(
-                          scrollDirection: Axis.vertical,
-                          itemCount: Meal.meals.length,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 1,
-                                  mainAxisExtent: 350,
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 32),
-                          itemBuilder: (BuildContext context, int index) {
-                            return meal(Meal.meals[index], context, index);
-                          }),
-                    )
-                  ],
-                ),
-              )),
-      ),
+          child: _isItemSelected
+              ? DetailsPage(_selectedItemIndex)
+              : Scaffold(
+                  body: LayoutBuilder(
+                    builder:
+                        (BuildContext context, BoxConstraints constraints) {
+                      return defaultUI(constraints);
+                    },
+                  ),
+                )),
+    );
+  }
+
+  Widget defaultUI(BoxConstraints constraints) {
+    print("width : ${constraints.maxWidth}");
+    var axisCount = 1;
+    var current = constraints.maxWidth;
+    if (current <= 500) {
+      axisCount = 1;
+    } else if (current > 500 && current <= 750) {
+      axisCount = 2;
+    } else if (current > 750 && current <= 1000) {
+      axisCount = 3;
+    } else {
+      axisCount = 4;
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const Text(
+          'Мы очень рады что  вы выбрали\nНаше ресторан, спасибо за визит!',
+          style: TextStyle(fontSize: 16),
+        ),
+        const SizedBox(height: 12),
+        Expanded(
+          child: GridView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: Meal.meals.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: axisCount,
+                  mainAxisExtent: 350,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 32),
+              itemBuilder: (BuildContext context, int index) {
+                return meal(Meal.meals[index], context, index);
+              }),
+        )
+      ],
     );
   }
 
@@ -190,7 +205,7 @@ class _DishesPageState extends State<DishesPage> {
                                               color: Color(0xff175B8F)))),
                                   backgroundColor:
                                       MaterialStateProperty.all<Color>(
-                                          Color(0xff175B8F))),
+                                          const Color(0xff175B8F))),
                               onPressed: () {
                                 setState(() {
                                   _isItemSelected = true;
