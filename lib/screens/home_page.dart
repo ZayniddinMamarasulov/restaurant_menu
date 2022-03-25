@@ -1,9 +1,8 @@
-import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:restaurant_menu/screens/details_page.dart';
 import 'package:restaurant_menu/screens/dishes_page.dart';
 import 'package:restaurant_menu/screens/salads_page.dart';
+import '../models/lang.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -26,12 +25,20 @@ class _HomePageState extends State<HomePage> {
     FlutterNativeSplash.remove();
   }
 
-  List<Widget> _pages = [
+  var _pages = [
     DishesPage(),
     SaladsPage(),
     SaladsPage(),
     SaladsPage(),
   ];
+
+  var _langs = [
+    Lang('uz', true),
+    Lang('ru', false),
+    Lang('en', false),
+  ];
+
+  int _activeLangIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +60,38 @@ class _HomePageState extends State<HomePage> {
             labelType: NavigationRailLabelType.all,
             backgroundColor: Color(0xff2A5270),
             selectedIndex: _selectedIndex,
+            leading: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const SizedBox(
+                  height: 120,
+                ),
+                ToggleButtons(
+                  fillColor: Colors.transparent,
+                  borderColor: Colors.transparent,
+                  selectedBorderColor: Colors.transparent,
+                  selectedColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  direction: Axis.vertical,
+                  children: <Widget>[
+                    langButton(_langs[0]),
+                    langButton(_langs[1]),
+                    langButton(_langs[2]),
+                  ],
+                  onPressed: (int index) {
+                    setState(() {
+                      _langs.forEach((e) {
+                        e.isActive = false;
+                      });
+                      _langs[index].isActive = true;
+                    });
+                  },
+                  isSelected: _langs.map((e) => e.isActive).toList(),
+                ),
+              ],
+            ),
             destinations: const [
               NavigationRailDestination(
                   icon: SizedBox(),
@@ -86,21 +125,24 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Route _createRoute() {
-    return PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => DetailsPage(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(-1.0, 0.0);
-          const end = Offset.zero;
-          const curve = Curves.ease;
-
-          var tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-          return SlideTransition(
-            position: animation.drive(tween),
-            child: child,
-          );
-        });
+  Widget langButton(Lang lang) {
+    return Container(
+      width: 40,
+      height: 40,
+      child: Center(
+        child: Text(
+          lang.name,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color:
+            lang.isActive ? const Color(0xff206498) : const Color(0xff2A5270),
+      ),
+    );
   }
 }

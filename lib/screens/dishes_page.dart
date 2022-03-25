@@ -1,54 +1,71 @@
+import 'dart:io';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:restaurant_menu/models/meal.dart';
+import 'package:restaurant_menu/screens/details_page.dart';
 
-class DishesPage extends StatelessWidget {
+class DishesPage extends StatefulWidget {
   DishesPage({Key? key}) : super(key: key);
 
-  final List<Color> _colors = const [
-    Color(0xffF2DFE1),
-    Color(0xffDCC7B1),
-    Color(0xffFFC5A8),
-    Color(0xff71C3A1),
-    Color(0xffA8B6FF),
-    Color(0xffFFE7A8),
-    Color(0xffCEA8FF),
-  ];
+  @override
+  State<DishesPage> createState() => _DishesPageState();
+}
+
+class _DishesPageState extends State<DishesPage> {
+  bool _isItemSelected = false;
+  int _selectedItemIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          body: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            // Text(
-            //   'Мы очень рады что  вы выбрали\nНаше ресторан, спасибо за визит!',
-            //   style: TextStyle(fontSize: 16),
-            // ),
-            Expanded(
-              child: GridView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: 7,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 1,
-                      mainAxisExtent: 320,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 32),
-                  itemBuilder: (BuildContext context, int index) {
-                    return meal(index);
-                  }),
-            )
-          ],
-        ),
-      )),
+    return WillPopScope(
+      onWillPop: () {
+        //trigger leaving and use own data
+        // Navigator.pop(context, false);
+        _isItemSelected
+            ? setState(() {
+                _isItemSelected = false;
+              })
+            : exit(0);
+
+        //we need to return a future
+        return Future.value(false);
+      },
+      child: SafeArea(
+        child: _isItemSelected
+            ? DetailsPage(_selectedItemIndex)
+            : Scaffold(
+                body: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    // Text(
+                    //   'Мы очень рады что  вы выбрали\nНаше ресторан, спасибо за визит!',
+                    //   style: TextStyle(fontSize: 16),
+                    // ),
+                    Expanded(
+                      child: GridView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: Meal.meals.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 1,
+                                  mainAxisExtent: 350,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 32),
+                          itemBuilder: (BuildContext context, int index) {
+                            return meal(Meal.meals[index], context, index);
+                          }),
+                    )
+                  ],
+                ),
+              )),
+      ),
     );
   }
 
-  Widget meal(index) {
+  Widget meal(Meal meal, context, index) {
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
@@ -61,7 +78,7 @@ class DishesPage extends StatelessWidget {
           child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
-                  color: _colors[index]),
+                  color: Color(meal.bannerColor!)),
               height: 360,
               width: 230,
               child: Padding(
@@ -78,32 +95,75 @@ class DishesPage extends StatelessWidget {
                           color: const Color(0xff00195C),
                         ),
                         SizedBox(width: 4),
-                        Text('Кавказская'),
+                        Text(meal.type!),
                       ],
                     ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Шашлык бараньих ребрышек',
-                      style: TextStyle(
-                          fontSize: 24,
-                          color: Color(0xff1E2022),
-                          fontWeight: FontWeight.w700),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      height: 90,
+                      child: Text(
+                        meal.name!,
+                        maxLines: 3,
+                        style: const TextStyle(
+                            height: 1.3,
+                            fontSize: 24,
+                            color: Color(0xff1E2022),
+                            fontWeight: FontWeight.w700),
+                      ),
                     ),
                     SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           'Стоимость:',
                           style: TextStyle(
                               color: Color(0xff52616B),
                               fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          '904 000 sum',
+                          meal.cost!,
                           style: TextStyle(
                               color: Color(0xff52616B),
                               fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Image.asset(
+                              'assets/ic_dish.png',
+                              height: 20,
+                              width: 20,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              meal.time!,
+                              style: const TextStyle(
+                                  color: Color(0xff52616B),
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Image.asset(
+                              'assets/ic_cal.png',
+                              height: 20,
+                              width: 20,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              meal.ingCount!.toString(),
+                              style: TextStyle(
+                                  color: Color(0xff52616B),
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -126,12 +186,17 @@ class DishesPage extends StatelessWidget {
                                       RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(10.0),
-                                          side: BorderSide(
+                                          side: const BorderSide(
                                               color: Color(0xff175B8F)))),
                                   backgroundColor:
                                       MaterialStateProperty.all<Color>(
                                           Color(0xff175B8F))),
-                              onPressed: () {},
+                              onPressed: () {
+                                setState(() {
+                                  _isItemSelected = true;
+                                  _selectedItemIndex = index;
+                                });
+                              },
                               child: Text('Подробнее'),
                             ),
                           )
@@ -146,7 +211,7 @@ class DishesPage extends StatelessWidget {
             top: -24,
             right: -8,
             child: Image.asset(
-              'assets/meal1.png',
+              meal.imageUrl!,
               height: 170,
               width: 170,
             ))
