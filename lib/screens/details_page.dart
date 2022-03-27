@@ -5,6 +5,7 @@ import '../models/meal.dart';
 class DetailsPage extends StatelessWidget {
   final int selectedItemIndex;
   int count = 2;
+
   DetailsPage(this.selectedItemIndex, {Key? key}) : super(key: key);
 
   @override
@@ -29,12 +30,12 @@ class DetailsPage extends StatelessWidget {
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          details(Meal.meals[selectedItemIndex]),
+          details(Meal.mealsRu[selectedItemIndex]),
           Positioned(
               top: -72,
               right: -48,
               child: Image.asset(
-                Meal.meals[selectedItemIndex].imageUrl!,
+                Meal.mealsRu[selectedItemIndex].imageUrl!,
                 height: 220,
               ))
         ],
@@ -109,7 +110,7 @@ class DetailsPage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            Meal.meals[0].details!,
+            Meal.mealsRu[0].details!,
             style: const TextStyle(fontSize: 16, height: 1.4),
             textAlign: TextAlign.left,
           )

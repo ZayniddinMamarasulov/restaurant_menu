@@ -1,5 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_menu/lang_provider.dart';
+import 'package:restaurant_menu/main.dart';
 import 'package:restaurant_menu/screens/dishes_page.dart';
 import 'package:restaurant_menu/screens/salads_page.dart';
 import '../models/lang.dart';
@@ -24,7 +28,6 @@ class _HomePageState extends State<HomePage> {
     await Future.delayed(const Duration(seconds: 2));
     FlutterNativeSplash.remove();
   }
-
 
   var _pages = [
     DishesPage(),
@@ -61,68 +64,136 @@ class _HomePageState extends State<HomePage> {
             labelType: NavigationRailLabelType.all,
             backgroundColor: Color(0xff2A5270),
             selectedIndex: _selectedIndex,
-            leading: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                const SizedBox(
-                  height: 120,
-                ),
-                ToggleButtons(
-                  fillColor: Colors.transparent,
-                  borderColor: Colors.transparent,
-                  selectedBorderColor: Colors.transparent,
-                  selectedColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  direction: Axis.vertical,
-                  children: <Widget>[
-                    langButton(_langs[0]),
-                    langButton(_langs[1]),
-                    langButton(_langs[2]),
-                  ],
-                  onPressed: (int index) {
-                    setState(() {
-                      _langs.forEach((e) {
-                        e.isActive = false;
-                      });
-                      _langs[index].isActive = true;
-                    });
-                  },
-                  isSelected: _langs.map((e) => e.isActive).toList(),
-                ),
-              ],
-            ),
-            destinations: const [
+            leading: langBuild(),
+            destinations: [
               NavigationRailDestination(
                   icon: SizedBox(),
                   label: RotatedBox(
                     quarterTurns: -1,
-                    child: Text("Блюда"),
+                    child: Text("meals".tr()),
                   )),
               NavigationRailDestination(
                   icon: SizedBox(),
                   label: RotatedBox(
                     quarterTurns: -1,
-                    child: Text("Салаты"),
+                    child: Text("salads".tr()),
                   )),
               NavigationRailDestination(
                   icon: SizedBox(),
                   label: RotatedBox(
                     quarterTurns: -1,
-                    child: Text("Напитки"),
+                    child: Text("drinks".tr()),
                   )),
               NavigationRailDestination(
                   icon: SizedBox(),
                   label: RotatedBox(
                     quarterTurns: -1,
-                    child: Text("Fast Food"),
+                    child: Text("fast_food".tr()),
                   )),
             ],
           ),
           Expanded(child: _pages[_selectedIndex])
         ],
       ),
+    );
+  }
+
+  void setCurrentLangButton() {
+    switch (context.locale.toString()) {
+      case 'uz_UZ':
+        {
+          _langs.forEach((element) {
+            if (element.name == 'uz') {
+              element.isActive = true;
+            } else {
+              element.isActive = false;
+            }
+          });
+        }
+        break;
+      case 'ru_RU':
+        {
+          _langs.forEach((element) {
+            if (element.name == 'ru') {
+              element.isActive = true;
+            } else {
+              element.isActive = false;
+            }
+          });
+        }
+        break;
+      case 'en_US':
+        {
+          _langs.forEach((element) {
+            if (element.name == 'en') {
+              element.isActive = true;
+            } else {
+              element.isActive = false;
+            }
+          });
+        }
+        break;
+    }
+  }
+
+  Widget langBuild() {
+    final langProvider = Provider.of<LangProvider>(context, listen: false);
+    setCurrentLangButton();
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        const SizedBox(
+          height: 120,
+        ),
+        ToggleButtons(
+          fillColor: Colors.transparent,
+          borderColor: Colors.transparent,
+          selectedBorderColor: Colors.transparent,
+          selectedColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          direction: Axis.vertical,
+          children: <Widget>[
+            langButton(_langs[0]),
+            langButton(_langs[1]),
+            langButton(_langs[2]),
+          ],
+          onPressed: (int index) {
+            setState(() {
+              _langs.forEach((e) {
+                e.isActive = false;
+              });
+              switch (index) {
+                case 0:
+                  {
+                    var newLocale = Locale('uz', 'UZ');
+                    context.setLocale(newLocale);
+                    langProvider.langChanged();
+                  }
+                  break;
+                case 1:
+                  {
+                    var newLocale = Locale('ru', 'RU');
+                    context.setLocale(newLocale);
+                    langProvider.langChanged();
+                  }
+                  break;
+                case 2:
+                  {
+                    var newLocale = Locale('en', 'US');
+                    context.setLocale(newLocale);
+                    langProvider.langChanged();
+                  }
+                  break;
+              }
+              _langs[index].isActive = true;
+            });
+          },
+          isSelected: _langs.map((e) => e.isActive).toList(),
+        ),
+      ],
     );
   }
 

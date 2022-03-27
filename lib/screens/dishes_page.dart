@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_menu/lang_provider.dart';
 import 'package:restaurant_menu/models/meal.dart';
 import 'package:restaurant_menu/screens/details_page.dart';
 
@@ -26,17 +29,19 @@ class _DishesPageState extends State<DishesPage> {
             : exit(0);
         return Future.value(false);
       },
-      child: SafeArea(
-          child: _isItemSelected
-              ? DetailsPage(_selectedItemIndex)
-              : Scaffold(
-                  body: LayoutBuilder(
-                    builder:
-                        (BuildContext context, BoxConstraints constraints) {
-                      return defaultUI(constraints);
-                    },
-                  ),
-                )),
+      child: Consumer<LangProvider>(builder: (context, data, child) {
+        return SafeArea(
+            child: _isItemSelected
+                ? DetailsPage(_selectedItemIndex)
+                : Scaffold(
+                    body: LayoutBuilder(
+                      builder:
+                          (BuildContext context, BoxConstraints constraints) {
+                        return defaultUI(constraints);
+                      },
+                    ),
+                  ));
+      }),
     );
   }
 
@@ -58,26 +63,45 @@ class _DishesPageState extends State<DishesPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        const Text(
-          'Мы очень рады что  вы выбрали\nНаше ресторан, спасибо за визит!',
+        Text(
+          'title'.tr(),
           style: TextStyle(fontSize: 16),
         ),
         const SizedBox(height: 12),
         Expanded(
           child: GridView.builder(
               scrollDirection: Axis.vertical,
-              itemCount: Meal.meals.length,
+              itemCount: getMeals().length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: axisCount,
                   mainAxisExtent: 350,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 32),
               itemBuilder: (BuildContext context, int index) {
-                return meal(Meal.meals[index], context, index);
+                return meal(getMeals()[index], context, index);
               }),
         )
       ],
     );
+  }
+
+  List<Meal> getMeals() {
+    switch (context.locale.toString()) {
+      case 'uz_UZ':
+        {
+          return Meal.mealsUz;
+        }
+      case 'ru_RU':
+        {
+          return Meal.mealsRu;
+        }
+      case 'en_US':
+        {
+          return Meal.mealsEn;
+        }
+      default:
+        return Meal.mealsRu;
+    }
   }
 
   Widget meal(Meal meal, context, index) {
@@ -130,8 +154,8 @@ class _DishesPageState extends State<DishesPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Стоимость:',
+                        Text(
+                          '${'cost'.tr()}:',
                           style: TextStyle(
                               color: Color(0xff52616B),
                               fontWeight: FontWeight.w600),
@@ -212,7 +236,7 @@ class _DishesPageState extends State<DishesPage> {
                                   _selectedItemIndex = index;
                                 });
                               },
-                              child: Text('Подробнее'),
+                              child: Text('more'.tr()),
                             ),
                           )
                         ],
