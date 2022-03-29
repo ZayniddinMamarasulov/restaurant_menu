@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:restaurant_menu/widgets/product_item.dart';
+
+import '../models/meal.dart';
 
 class SaladsPage extends StatelessWidget {
   const SaladsPage({Key? key}) : super(key: key);
@@ -7,7 +10,13 @@ class SaladsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('Salads'),
+        child: Column(
+          children: [
+            Text('Salads'),
+            SizedBox(height: 40),
+            ProductItem(Meal.mealsRu[0], 0),
+          ],
+        ),
       ),
     );
   }

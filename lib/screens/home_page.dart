@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_menu/lang_provider.dart';
+import 'package:restaurant_menu/main_provider.dart';
 import 'package:restaurant_menu/main.dart';
 import 'package:restaurant_menu/screens/dishes_page.dart';
 import 'package:restaurant_menu/screens/salads_page.dart';
@@ -49,11 +49,31 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Row(
         children: [
-          NavigationRail(
+          LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+            return myMenu(constraints);
+          }),
+          Expanded(child: _pages[_selectedIndex])
+        ],
+      ),
+    );
+  }
+
+  Widget myMenu(BoxConstraints constraints) {
+    final mainProvider = Provider.of<MainProvider>(context, listen: false);
+
+    return SingleChildScrollView(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: constraints.maxHeight),
+        child: IntrinsicHeight(
+          child: NavigationRail(
             minWidth: 52,
             onDestinationSelected: (int index) {
               setState(() {
                 _selectedIndex = index;
+                if (index == 0) {
+                  mainProvider.isItemSelected(false);
+                }
               });
             },
             groupAlignment: 0.5,
@@ -92,8 +112,7 @@ class _HomePageState extends State<HomePage> {
                   )),
             ],
           ),
-          Expanded(child: _pages[_selectedIndex])
-        ],
+        ),
       ),
     );
   }
@@ -137,7 +156,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget langBuild() {
-    final langProvider = Provider.of<LangProvider>(context, listen: false);
+    final langProvider = Provider.of<MainProvider>(context, listen: false);
     setCurrentLangButton();
 
     return Column(

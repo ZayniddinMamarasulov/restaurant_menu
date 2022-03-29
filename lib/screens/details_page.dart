@@ -1,41 +1,73 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../main_provider.dart';
 import '../models/meal.dart';
 
-class DetailsPage extends StatelessWidget {
+class DetailsPage extends StatefulWidget {
   final int selectedItemIndex;
-  int count = 2;
 
   DetailsPage(this.selectedItemIndex, {Key? key}) : super(key: key);
 
   @override
+  State<DetailsPage> createState() => _DetailsPageState();
+}
+
+class _DetailsPageState extends State<DetailsPage> {
+  int count = 2;
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      height: double.infinity,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: AssetImage('assets/bg_details.png'),
+    final mainProvider = Provider.of<MainProvider>(context, listen: false);
+    return Consumer<MainProvider>(builder: (context, data, child) {
+      return Container(
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: AssetImage('assets/bg_details.png'),
+          ),
         ),
-      ),
-      child: myBody(),
-    );
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+                padding: const EdgeInsets.only(left: 12, top: 12),
+                child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      mainProvider.isItemSelected(false);
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                    size: 36,
+                  ),
+                )),
+            Expanded(child: myBody()),
+          ],
+        ),
+      );
+    });
   }
 
   Widget myBody() {
     return Container(
-      margin: const EdgeInsets.only(top: 80, right: 30),
+      margin: const EdgeInsets.only(top: 40, right: 30),
       color: Colors.white,
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          details(Meal.mealsRu[selectedItemIndex]),
+          details(getMeals()[widget.selectedItemIndex]),
           Positioned(
               top: -72,
               right: -48,
               child: Image.asset(
-                Meal.mealsRu[selectedItemIndex].imageUrl!,
+                getMeals()[widget.selectedItemIndex].imageUrl!,
                 height: 220,
               ))
         ],
@@ -117,5 +149,24 @@ class DetailsPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  List<Meal> getMeals() {
+    switch (context.locale.toString()) {
+      case 'uz_UZ':
+        {
+          return Meal.mealsUz;
+        }
+      case 'ru_RU':
+        {
+          return Meal.mealsRu;
+        }
+      case 'en_US':
+        {
+          return Meal.mealsEn;
+        }
+      default:
+        return Meal.mealsRu;
+    }
   }
 }
