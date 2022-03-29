@@ -34,54 +34,33 @@ class _DishesPageState extends State<DishesPage> {
             child: _isItemSelected
                 ? DetailsPage(_selectedItemIndex)
                 : Scaffold(
-                    body: LayoutBuilder(
-                      builder:
-                          (BuildContext context, BoxConstraints constraints) {
-                        return defaultUI(constraints);
-                      },
+                    body: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          'title'.tr(),
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(height: 12),
+                        Expanded(
+                          child: GridView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemCount: getMeals().length,
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 1,
+                                  mainAxisExtent: 350,
+                                  crossAxisSpacing: 12,
+                                  mainAxisSpacing: 32),
+                              itemBuilder: (BuildContext context, int index) {
+                                return meal(getMeals()[index], context, index);
+                              }),
+                        )
+                      ],
                     ),
                   ));
       }),
-    );
-  }
-
-  Widget defaultUI(BoxConstraints constraints) {
-    print("width : ${constraints.maxWidth}");
-    var axisCount = 1;
-    var current = constraints.maxWidth;
-    if (current <= 500) {
-      axisCount = 1;
-    } else if (current > 500 && current <= 750) {
-      axisCount = 2;
-    } else if (current > 750 && current <= 1000) {
-      axisCount = 3;
-    } else {
-      axisCount = 4;
-    }
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          'title'.tr(),
-          style: TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 12),
-        Expanded(
-          child: GridView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: getMeals().length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: axisCount,
-                  mainAxisExtent: 350,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 32),
-              itemBuilder: (BuildContext context, int index) {
-                return meal(getMeals()[index], context, index);
-              }),
-        )
-      ],
     );
   }
 
