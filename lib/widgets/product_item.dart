@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_menu/models/meal.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main_provider.dart';
 
@@ -18,6 +18,8 @@ class ProductItem extends StatefulWidget {
 class _ProductItemState extends State<ProductItem> {
   @override
   Widget build(BuildContext context) {
+    final mainProvider = Provider.of<MainProvider>(context, listen: false);
+
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
@@ -124,11 +126,22 @@ class _ProductItemState extends State<ProductItem> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Image.asset(
-                            'assets/btn_plus.png',
-                            height: 50,
-                            width: 50,
-                          ),
+                          // Image.asset(
+                          //   'assets/btn_plus.png',
+                          //   height: 50,
+                          //   width: 50,
+                          // ),
+                          IconButton(
+                              onPressed: () async {
+                                List<int> favList =
+                                    await mainProvider.getFavList();
+                                var newList = List.of(favList);
+                                if (!newList.contains(widget.index)) {
+                                  newList.add(widget.index);
+                                }
+                                mainProvider.setFavList(newList);
+                              },
+                              icon: Icon(Icons.favorite_border_outlined)),
                           Container(
                             height: 50,
                             child: ElevatedButton(

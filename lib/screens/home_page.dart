@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_menu/main_provider.dart';
 import 'package:restaurant_menu/main.dart';
 import 'package:restaurant_menu/screens/dishes_page.dart';
+import 'package:restaurant_menu/screens/favourite_page.dart';
 import 'package:restaurant_menu/screens/salads_page.dart';
 import '../models/lang.dart';
 
@@ -30,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   var _pages = [
+    FavouritePage(),
     DishesPage(),
     SaladsPage(),
     SaladsPage(),
@@ -86,6 +88,15 @@ class _HomePageState extends State<HomePage> {
             selectedIndex: _selectedIndex,
             leading: langBuild(),
             destinations: [
+              NavigationRailDestination(
+                icon: SizedBox(),
+                label: RotatedBox(
+                    quarterTurns: 0,
+                    child: Icon(
+                      Icons.favorite_border_outlined,
+                      color: Colors.white,
+                    )),
+              ),
               NavigationRailDestination(
                   icon: SizedBox(),
                   label: RotatedBox(
@@ -212,6 +223,7 @@ class _HomePageState extends State<HomePage> {
           },
           isSelected: _langs.map((e) => e.isActive).toList(),
         ),
+        SizedBox(height: 4),
       ],
     );
   }
