@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_menu/main_provider.dart';
-import 'package:restaurant_menu/main.dart';
 import 'package:restaurant_menu/screens/dishes_page.dart';
 import 'package:restaurant_menu/screens/favourite_page.dart';
 import 'package:restaurant_menu/screens/salads_page.dart';
@@ -55,7 +54,12 @@ class _HomePageState extends State<HomePage> {
               builder: (BuildContext context, BoxConstraints constraints) {
             return myMenu(constraints);
           }),
-          Expanded(child: _pages[_selectedIndex])
+          Expanded(
+              child: Navigator(
+            onGenerateRoute: (settings) => MaterialPageRoute(
+              builder: (context) => _pages[_selectedIndex],
+            ),
+          ))
         ],
       ),
     );
@@ -74,7 +78,6 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 _selectedIndex = index;
                 if (index == 0) {
-                  mainProvider.isItemSelected(false);
                 }
               });
             },

@@ -1,60 +1,56 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../main_provider.dart';
 import '../models/meal.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class DetailsPage extends StatefulWidget {
   final int selectedItemIndex;
 
-  DetailsPage(this.selectedItemIndex, {Key? key}) : super(key: key);
+  const DetailsPage(this.selectedItemIndex, {Key? key}) : super(key: key);
 
   @override
   State<DetailsPage> createState() => _DetailsPageState();
 }
 
 class _DetailsPageState extends State<DetailsPage> {
-  int count = 2;
-
   @override
   Widget build(BuildContext context) {
-    final mainProvider = Provider.of<MainProvider>(context, listen: false);
     return Consumer<MainProvider>(builder: (context, data, child) {
-      return Container(
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: AssetImage('assets/bg_details.png'),
+      return Material(
+        child: Container(
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: AssetImage('assets/bg_details.png'),
+            ),
           ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-                padding: const EdgeInsets.only(left: 12, top: 12),
-                child: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      mainProvider.isItemSelected(false);
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                    size: 36,
-                  ),
-                )),
-            Expanded(child: myBody()),
-          ],
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                  padding: const EdgeInsets.only(left: 12, top: 12),
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 36,
+                    ),
+                  )),
+              Expanded(child: myBody(context)),
+            ],
+          ),
         ),
       );
     });
   }
 
-  Widget myBody() {
+  Widget myBody(context) {
     return Container(
       margin: const EdgeInsets.only(top: 40, right: 30),
       color: Colors.white,
@@ -66,9 +62,12 @@ class _DetailsPageState extends State<DetailsPage> {
           Positioned(
               top: -72,
               right: -48,
-              child: Image.asset(
-                getMeals()[widget.selectedItemIndex].imageUrl!,
-                height: 220,
+              child: Hero(
+                tag: 'productImage',
+                child: Image.asset(
+                  getMeals()[widget.selectedItemIndex].imageUrl!,
+                  height: 220,
+                ),
               ))
         ],
       ),

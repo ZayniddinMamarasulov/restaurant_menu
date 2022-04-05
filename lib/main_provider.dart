@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:restaurant_menu/constants.dart';
+import 'package:restaurant_menu/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainProvider extends ChangeNotifier {
@@ -14,11 +14,6 @@ class MainProvider extends ChangeNotifier {
 
   int getItemIndex() {
     return _selectedItemIndex;
-  }
-
-  void isItemSelected(value) {
-    _isItemSelected = value;
-    notifyListeners();
   }
 
   bool getItemSelected() {

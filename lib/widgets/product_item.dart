@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_menu/screens/details_page.dart';
+import 'package:restaurant_menu/utils/navigator_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main_provider.dart';
@@ -16,6 +18,13 @@ class ProductItem extends StatefulWidget {
 }
 
 class _ProductItemState extends State<ProductItem> {
+  @override
+  void initState() {
+    if (mounted) {
+      super.initState();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final mainProvider = Provider.of<MainProvider>(context, listen: false);
@@ -158,11 +167,8 @@ class _ProductItemState extends State<ProductItem> {
                                           const Color(0xff175B8F))),
                               onPressed: () {
                                 setState(() {
-                                  final mainProvider =
-                                      Provider.of<MainProvider>(context,
-                                          listen: false);
-                                  mainProvider.isItemSelected(true);
-                                  mainProvider.setItemIndex(widget.index);
+                                  Navigator.of(context).push(
+                                      createRoute(DetailsPage(widget.index)));
                                 });
                               },
                               child: Text('more'.tr()),
@@ -178,10 +184,13 @@ class _ProductItemState extends State<ProductItem> {
         Positioned(
             top: -24,
             right: -8,
-            child: Image.asset(
-              widget.meal.imageUrl!,
-              height: 170,
-              width: 170,
+            child: Hero(
+              tag: 'productImage',
+              child: Image.asset(
+                widget.meal.imageUrl!,
+                height: 170,
+                width: 170,
+              ),
             ))
       ],
     );

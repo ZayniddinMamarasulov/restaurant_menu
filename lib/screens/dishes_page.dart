@@ -1,10 +1,8 @@
-import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_menu/main_provider.dart';
 import 'package:restaurant_menu/models/meal.dart';
-import 'package:restaurant_menu/screens/details_page.dart';
 import 'package:restaurant_menu/widgets/product_item.dart';
 
 class DishesPage extends StatefulWidget {
@@ -15,35 +13,18 @@ class DishesPage extends StatefulWidget {
 }
 
 class _DishesPageState extends State<DishesPage> {
-  int _selectedItemIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    final mainProvider = Provider.of<MainProvider>(context, listen: false);
-
-    return WillPopScope(
-      onWillPop: () {
-        mainProvider.getItemSelected()
-            ? setState(() {
-                mainProvider.isItemSelected(false);
-              })
-            : exit(0);
-        return Future.value(false);
-      },
-      child: Consumer<MainProvider>(builder: (context, data, child) {
-        return SafeArea(
-            child: (mainProvider.getItemSelected())
-                ? DetailsPage(mainProvider.getItemIndex())
-                : Scaffold(
-                    body: LayoutBuilder(
-                      builder:
-                          (BuildContext context, BoxConstraints constraints) {
-                        return mainUI(constraints);
-                      },
-                    ),
-                  ));
-      }),
-    );
+    return Consumer<MainProvider>(builder: (context, data, child) {
+      return SafeArea(child: Scaffold(
+        body: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            return mainUI(constraints);
+          },
+        ),
+      ));
+    });
   }
 
   Widget mainUI(BoxConstraints constraints) {
