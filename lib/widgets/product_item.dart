@@ -6,10 +6,11 @@ import 'package:restaurant_menu/utils/navigator_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../main_provider.dart';
+import '../models/meal.dart';
 
 class ProductItem extends StatefulWidget {
-  final meal;
-  final index;
+  final Meal meal;
+  final int index;
 
   const ProductItem(this.meal, this.index, {Key? key}) : super(key: key);
 
