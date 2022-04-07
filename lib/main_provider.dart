@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:restaurant_menu/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -43,6 +41,7 @@ class MainProvider extends ChangeNotifier {
       Constants.FAV_MEALS,
       indexes.map((e) => e.toString()).toList(),
     );
+    notifyListeners();
   }
 
   Future<List<int>> getFavList() async {
@@ -53,8 +52,4 @@ class MainProvider extends ChangeNotifier {
     }
     return List.empty();
   }
-
-
-
-
 }

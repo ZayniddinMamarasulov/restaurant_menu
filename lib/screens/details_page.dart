@@ -63,7 +63,7 @@ class _DetailsPageState extends State<DetailsPage> {
               top: -72,
               right: -48,
               child: Hero(
-                tag: 'productImage',
+                tag: widget.selectedItemIndex.toString(),
                 child: Image.asset(
                   getMeals()[widget.selectedItemIndex].imageUrl!,
                   height: 220,

@@ -13,7 +13,6 @@ class DishesPage extends StatefulWidget {
 }
 
 class _DishesPageState extends State<DishesPage> {
-
   @override
   Widget build(BuildContext context) {
     return Consumer<MainProvider>(builder: (context, data, child) {
@@ -64,7 +63,23 @@ class _DishesPageState extends State<DishesPage> {
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 32),
               itemBuilder: (BuildContext context, int index) {
-                return ProductItem(getMeals()[index], index);
+                return FutureBuilder(
+                    future: getFavourites(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data.contains(index)) {
+                          return ProductItem(getMeals()[index], index,
+                              isFavourite: true);
+                        } else {
+                          return ProductItem(getMeals()[index], index,
+                              isFavourite: false);
+                        }
+                      } else {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      // return ProductItem(getMeals()[index], index,
+                      //     isFavourite: snapshot.data.contains(index));
+                    });
               }),
         )
       ],
@@ -89,4 +104,12 @@ class _DishesPageState extends State<DishesPage> {
         return Meal.mealsRu;
     }
   }
+
+  Future<List<int>> getFavourites() async {
+    final mainProvider = Provider.of<MainProvider>(context, listen: false);
+
+    return await mainProvider.getFavList();
+  }
+
+// [1,4,6,9]
 }

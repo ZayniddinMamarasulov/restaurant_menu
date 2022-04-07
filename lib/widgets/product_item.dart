@@ -11,8 +11,10 @@ import '../models/meal.dart';
 class ProductItem extends StatefulWidget {
   final Meal meal;
   final int index;
+  final bool isFavourite;
 
-  const ProductItem(this.meal, this.index, {Key? key}) : super(key: key);
+  const ProductItem(this.meal, this.index, {this.isFavourite = false, Key? key})
+      : super(key: key);
 
   @override
   State<ProductItem> createState() => _ProductItemState();
@@ -28,8 +30,6 @@ class _ProductItemState extends State<ProductItem> {
 
   @override
   Widget build(BuildContext context) {
-    final mainProvider = Provider.of<MainProvider>(context, listen: false);
-
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
@@ -136,22 +136,19 @@ class _ProductItemState extends State<ProductItem> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Image.asset(
-                          //   'assets/btn_plus.png',
-                          //   height: 50,
-                          //   width: 50,
-                          // ),
                           IconButton(
-                              onPressed: () async {
-                                List<int> favList =
-                                    await mainProvider.getFavList();
-                                var newList = List.of(favList);
-                                if (!newList.contains(widget.index)) {
-                                  newList.add(widget.index);
+                              onPressed: () {
+                                //agar selected bo'lsa remove()
+                                // selected bo'lmasa add()
+                                if (widget.isFavourite) {
+                                  removeFromFavorite(widget.index);
+                                } else {
+                                  addToFavorite();
                                 }
-                                mainProvider.setFavList(newList);
                               },
-                              icon: Icon(Icons.favorite_border_outlined)),
+                              icon: widget.isFavourite
+                                  ? Icon(Icons.favorite_sharp)
+                                  : Icon(Icons.favorite_border_outlined)),
                           Container(
                             height: 50,
                             child: ElevatedButton(
@@ -186,14 +183,36 @@ class _ProductItemState extends State<ProductItem> {
             top: -24,
             right: -8,
             child: Hero(
-              tag: 'productImage',
+              tag: widget.index.toString(),
               child: Image.asset(
                 widget.meal.imageUrl!,
                 height: 170,
-                width: 170,
               ),
             ))
       ],
     );
+  }
+
+  void addToFavorite() async {
+    final mainProvider = Provider.of<MainProvider>(context, listen: false);
+
+    List<int> favList = await mainProvider.getFavList();
+    var newList = List.of(favList);
+    if (!newList.contains(widget.index)) {
+      newList.add(widget.index);
+    }
+    mainProvider.setFavList(newList);
+  }
+
+  void removeFromFavorite(index) async {
+    final mainProvider = Provider.of<MainProvider>(context, listen: false);
+
+    List<int> favList = await mainProvider.getFavList();
+    var newList = List.of(favList);
+    // [1,4,5,0] hozirgi list
+    // [1,4,5] new list
+    newList.remove(index);
+
+    mainProvider.setFavList(newList);
   }
 }
