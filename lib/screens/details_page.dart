@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_menu/utils/product_type.dart';
 import '../main_provider.dart';
 import '../models/meal.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../models/salad.dart';
+
 class DetailsPage extends StatefulWidget {
   final int selectedItemIndex;
+  final ProductType productType;
 
-  const DetailsPage(this.selectedItemIndex, {Key? key}) : super(key: key);
+  const DetailsPage(this.selectedItemIndex, this.productType, {Key? key})
+      : super(key: key);
 
   @override
   State<DetailsPage> createState() => _DetailsPageState();
@@ -58,7 +63,7 @@ class _DetailsPageState extends State<DetailsPage> {
         clipBehavior: Clip.none,
         alignment: Alignment.center,
         children: [
-          details(getMeals()[widget.selectedItemIndex]),
+          buildUi(),
           Positioned(
               top: -72,
               right: -48,
@@ -74,7 +79,7 @@ class _DetailsPageState extends State<DetailsPage> {
     );
   }
 
-  Widget details(Meal meal) {
+  Widget detailsMeals(Meal meal) {
     return Padding(
       padding: const EdgeInsets.only(left: 12, right: 12),
       child: Column(
@@ -88,6 +93,158 @@ class _DetailsPageState extends State<DetailsPage> {
               fontWeight: FontWeight.w700,
             ),
           ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/ic_dish.png',
+                    height: 20,
+                    width: 20,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '20 мин',
+                    style: const TextStyle(
+                        color: Color(0xff52616B), fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/ic_cal.png',
+                    height: 20,
+                    width: 20,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '5 инг',
+                    style: TextStyle(
+                        color: Color(0xff52616B), fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/ic_kkal.png',
+                    height: 20,
+                    width: 20,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '438 кал',
+                    style: TextStyle(
+                        color: Color(0xff52616B), fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            Meal.mealsRu[0].details!,
+            style: const TextStyle(fontSize: 16, height: 1.4),
+            textAlign: TextAlign.left,
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget detailsSalad(Salad salad) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 12, right: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // const SizedBox(height: 140),
+          // Text(
+          //   salad,
+          //   style: TextStyle(
+          //     fontSize: 26,
+          //     fontWeight: FontWeight.w700,
+          //   ),
+          // ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/ic_dish.png',
+                    height: 20,
+                    width: 20,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '20 мин',
+                    style: const TextStyle(
+                        color: Color(0xff52616B), fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/ic_cal.png',
+                    height: 20,
+                    width: 20,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '5 инг',
+                    style: TextStyle(
+                        color: Color(0xff52616B), fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/ic_kkal.png',
+                    height: 20,
+                    width: 20,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '438 кал',
+                    style: TextStyle(
+                        color: Color(0xff52616B), fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            Meal.mealsRu[0].details!,
+            style: const TextStyle(fontSize: 16, height: 1.4),
+            textAlign: TextAlign.left,
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget detailsDrink(Salad salad) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 12, right: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 140),
+          // Text(
+          //   meal.name!,
+          //   style: TextStyle(
+          //     fontSize: 26,
+          //     fontWeight: FontWeight.w700,
+          //   ),
+          // ),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -167,5 +324,42 @@ class _DetailsPageState extends State<DetailsPage> {
       default:
         return Meal.mealsRu;
     }
+  }
+
+  List<Salad> getSalads() {
+    switch (context.locale.toString()) {
+      case 'uz_UZ':
+        {
+          return Salad.saladsRu;
+        }
+      case 'ru_RU':
+        {
+          return Salad.saladsRu;
+        }
+      case 'en_US':
+        {
+          return Salad.saladsRu;
+        }
+      default:
+        return Salad.saladsRu;
+    }
+  }
+
+  Widget buildUi() {
+    switch (widget.productType) {
+      case ProductType.DISH:
+        {
+          return detailsMeals(getMeals()[widget.selectedItemIndex]);
+        }
+      case ProductType.SALAD:
+        {
+          return detailsSalad(getSalads()[widget.selectedItemIndex]);
+        }
+      case ProductType.DRINK:
+        {
+          return detailsDrink(getSalads()[widget.selectedItemIndex]);
+        }
+    }
+    return detailsMeals(getMeals()[widget.selectedItemIndex]);
   }
 }

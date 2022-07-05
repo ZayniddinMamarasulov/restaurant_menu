@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_menu/screens/details_page.dart';
 import 'package:restaurant_menu/utils/navigator_settings.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:restaurant_menu/utils/product_type.dart';
 
 import '../main_provider.dart';
 import '../models/meal.dart';
@@ -12,9 +12,15 @@ class ProductItem extends StatefulWidget {
   final Meal meal;
   final int index;
   final bool isFavourite;
+  final ProductType productType;
 
-  const ProductItem(this.meal, this.index, {this.isFavourite = false, Key? key})
-      : super(key: key);
+  const ProductItem(
+    this.meal,
+    this.index, {
+    this.isFavourite = false,
+    this.productType = ProductType.DISH,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<ProductItem> createState() => _ProductItemState();
@@ -165,8 +171,7 @@ class _ProductItemState extends State<ProductItem> {
                                           const Color(0xff175B8F))),
                               onPressed: () {
                                 setState(() {
-                                  Navigator.of(context).push(
-                                      createRoute(DetailsPage(widget.index)));
+                                  navigateToDetails();
                                 });
                               },
                               child: Text('more'.tr()),
@@ -214,5 +219,28 @@ class _ProductItemState extends State<ProductItem> {
     newList.remove(index);
 
     mainProvider.setFavList(newList);
+  }
+
+  void navigateToDetails() {
+    switch (widget.productType) {
+      case ProductType.DISH:
+        {
+          Navigator.of(context)
+              .push(createRoute(DetailsPage(widget.index, ProductType.DISH)));
+        }
+        break;
+      case ProductType.SALAD:
+        {
+          Navigator.of(context)
+              .push(createRoute(DetailsPage(widget.index, ProductType.DISH)));
+        }
+        break;
+      case ProductType.DRINK:
+        {
+          Navigator.of(context)
+              .push(createRoute(DetailsPage(widget.index, ProductType.DISH)));
+        }
+        break;
+    }
   }
 }

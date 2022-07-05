@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_menu/main_provider.dart';
 import 'package:restaurant_menu/models/meal.dart';
+import 'package:restaurant_menu/utils/product_type.dart';
 import 'package:restaurant_menu/widgets/product_item.dart';
 
 class DishesPage extends StatefulWidget {
@@ -68,11 +69,19 @@ class _DishesPageState extends State<DishesPage> {
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.hasData) {
                         if (snapshot.data.contains(index)) {
-                          return ProductItem(getMeals()[index], index,
-                              isFavourite: true);
+                          return ProductItem(
+                            getMeals()[index],
+                            index,
+                            isFavourite: true,
+                            productType: ProductType.DISH,
+                          );
                         } else {
-                          return ProductItem(getMeals()[index], index,
-                              isFavourite: false);
+                          return ProductItem(
+                            getMeals()[index],
+                            index,
+                            isFavourite: false,
+                            productType: ProductType.DISH,
+                          );
                         }
                       } else {
                         return const Center(child: CircularProgressIndicator());
@@ -107,7 +116,6 @@ class _DishesPageState extends State<DishesPage> {
 
   Future<List<int>> getFavourites() async {
     final mainProvider = Provider.of<MainProvider>(context, listen: false);
-
     return await mainProvider.getFavList();
   }
 

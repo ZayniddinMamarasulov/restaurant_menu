@@ -7,6 +7,7 @@ import 'package:restaurant_menu/screens/dishes_page.dart';
 import 'package:restaurant_menu/screens/favourite_page.dart';
 import 'package:restaurant_menu/screens/salads_page.dart';
 import '../models/lang.dart';
+import '../models/meal.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -67,7 +68,6 @@ class _HomePageState extends State<HomePage> {
 
   Widget myMenu(BoxConstraints constraints) {
     final mainProvider = Provider.of<MainProvider>(context, listen: false);
-
     return SingleChildScrollView(
       child: ConstrainedBox(
         constraints: BoxConstraints(minHeight: constraints.maxHeight),
